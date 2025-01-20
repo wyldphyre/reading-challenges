@@ -9,6 +9,7 @@ public static class ApplicationServiceCollectionExtensions
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddSingleton<IChallengeRepository, ChallengeRepository>();
+        services.AddSingleton<IChallengeService, ChallengeService>();
 
         return services;
     }

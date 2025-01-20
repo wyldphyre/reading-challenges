@@ -1,5 +1,5 @@
 ﻿using Challenges.Api.Mapping;
-using Challenges.Application.Repositories;
+using Challenges.Application.Services;
 using Challenges.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +8,11 @@ namespace Challenges.Api.Controllers;
 [ApiController]
 public class ChallengesController : ControllerBase
 {
-    private readonly IChallengeRepository _challengeRepository;
+    private readonly IChallengeService _challengeService;
 
-    public ChallengesController(IChallengeRepository challengeRepository)
+    public ChallengesController(IChallengeService challengeService)
     {
-        _challengeRepository = challengeRepository;
+        _challengeService = challengeService;
     }
 
     [HttpPost(ApiEndpoints.Challenges.Create)]
@@ -20,7 +20,7 @@ public class ChallengesController : ControllerBase
     {
         var challenge = request.MapToChallenge();
 
-        await _challengeRepository.CreateAsync(challenge);
+        await _challengeService.CreateAsync(challenge);
 
         return CreatedAtAction(nameof(Get), new { id = challenge.Id }, challenge);
     }
@@ -28,7 +28,7 @@ public class ChallengesController : ControllerBase
     [HttpGet(ApiEndpoints.Challenges.Get)]
     public async Task<IActionResult> Get([FromRoute] Guid id)
     {
-        var challenge = await _challengeRepository.GetByIdAsync(id);
+        var challenge = await _challengeService.GetByIdAsync(id);
 
         if (challenge is null)
         {
@@ -43,7 +43,7 @@ public class ChallengesController : ControllerBase
     [HttpGet(ApiEndpoints.Challenges.GetAll)]
     public async Task<IActionResult> GetAll()
     {
-        var challenges = await _challengeRepository.GetAllAsync();
+        var challenges = await _challengeService.GetAllAsync();
 
         var response = challenges.MapToResponse();
 
@@ -54,9 +54,9 @@ public class ChallengesController : ControllerBase
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateChallengeRequest request)
     {
         var challenge = request.MapToChallenge(id);
-        var updated = await _challengeRepository.UpdateAsync(challenge);
+        var updatedChallenge = await _challengeService.UpdateAsync(challenge);
 
-        if (!updated)
+        if (updatedChallenge is null)
         {
             return NotFound();
         }
@@ -69,7 +69,7 @@ public class ChallengesController : ControllerBase
     [HttpDelete(ApiEndpoints.Challenges.Delete)]
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
-        var deleted = await _challengeRepository.DeleteByIdAsync(id);
+        var deleted = await _challengeService.DeleteByIdAsync(id);
 
         if (!deleted)
         {
