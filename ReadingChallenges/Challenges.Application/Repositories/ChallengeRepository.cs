@@ -66,7 +66,7 @@ public class ChallengeRepository : IChallengeRepository
         return result > 0;
     }
 
-    public async Task<bool> ExistsById(Guid id)
+    public async Task<bool> ExistsByIdAsync(Guid id)
     {
         using var connection = await _connectionFactory.CreateConnectionAsync();
         return await connection.ExecuteScalarAsync<bool>(

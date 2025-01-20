@@ -14,5 +14,5 @@ public interface IChallengeRepository
 
     Task<bool> DeleteByIdAsync(Guid id);
 
-    Task<bool> ExistsById(Guid id);
+    Task<bool> ExistsByIdAsync(Guid id);
 }
