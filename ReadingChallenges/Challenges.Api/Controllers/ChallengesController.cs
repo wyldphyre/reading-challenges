@@ -16,19 +16,23 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpPost(ApiEndpoints.Challenges.Create)]
-    public async Task<IActionResult> Create([FromBody] CreateChallengeRequest request)
+    public async Task<IActionResult> Create(
+        [FromBody] CreateChallengeRequest request,
+        CancellationToken token)
     {
         var challenge = request.MapToChallenge();
 
-        await _challengeService.CreateAsync(challenge);
+        await _challengeService.CreateAsync(challenge, token);
 
         return CreatedAtAction(nameof(Get), new { id = challenge.Id }, challenge);
     }
 
     [HttpGet(ApiEndpoints.Challenges.Get)]
-    public async Task<IActionResult> Get([FromRoute] Guid id)
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid id,
+        CancellationToken token)
     {
-        var challenge = await _challengeService.GetByIdAsync(id);
+        var challenge = await _challengeService.GetByIdAsync(id, token);
 
         if (challenge is null)
         {
@@ -41,9 +45,9 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpGet(ApiEndpoints.Challenges.GetAll)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken token)
     {
-        var challenges = await _challengeService.GetAllAsync();
+        var challenges = await _challengeService.GetAllAsync(token);
 
         var response = challenges.MapToResponse();
 
@@ -51,10 +55,13 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpPut(ApiEndpoints.Challenges.Update)]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateChallengeRequest request)
+    public async Task<IActionResult> Update(
+        [FromRoute] Guid id,
+        [FromBody] UpdateChallengeRequest request,
+        CancellationToken token)
     {
         var challenge = request.MapToChallenge(id);
-        var updatedChallenge = await _challengeService.UpdateAsync(challenge);
+        var updatedChallenge = await _challengeService.UpdateAsync(challenge, token);
 
         if (updatedChallenge is null)
         {
@@ -67,9 +74,11 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpDelete(ApiEndpoints.Challenges.Delete)]
-    public async Task<IActionResult> Delete([FromRoute] Guid id)
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid id,
+        CancellationToken token)
     {
-        var deleted = await _challengeService.DeleteByIdAsync(id);
+        var deleted = await _challengeService.DeleteByIdAsync(id, token);
 
         if (!deleted)
         {

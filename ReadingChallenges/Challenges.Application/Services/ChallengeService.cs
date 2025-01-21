@@ -16,41 +16,41 @@ public class ChallengeService : IChallengeService
         _challengeValidator = challengeValidator;
     }
 
-    public async Task<bool> CreateAsync(Challenge challenge)
+    public async Task<bool> CreateAsync(Challenge challenge, CancellationToken token = default)
     {
-        await _challengeValidator.ValidateAndThrowAsync(challenge);
+        await _challengeValidator.ValidateAndThrowAsync(challenge, token);
 
-        return await _challengeRepository.CreateAsync(challenge);
+        return await _challengeRepository.CreateAsync(challenge, token);
     }
 
-    public Task<Challenge?> GetByIdAsync(Guid id)
+    public Task<Challenge?> GetByIdAsync(Guid id, CancellationToken token = default)
     {
-        return _challengeRepository.GetByIdAsync(id);
+        return _challengeRepository.GetByIdAsync(id, token);
     }
 
-    public Task<IEnumerable<Challenge>> GetAllAsync()
+    public Task<IEnumerable<Challenge>> GetAllAsync(CancellationToken token = default)
     {
-        return _challengeRepository.GetAllAsync();
+        return _challengeRepository.GetAllAsync(token);
     }
 
-    public async Task<Challenge?> UpdateAsync(Challenge challenge)
+    public async Task<Challenge?> UpdateAsync(Challenge challenge, CancellationToken token = default)
     {
-        await _challengeValidator.ValidateAndThrowAsync(challenge);
+        await _challengeValidator.ValidateAndThrowAsync(challenge, cancellationToken: token);
 
-        var challengeExists = await _challengeRepository.ExistsByIdAsync(challenge.Id);
+        var challengeExists = await _challengeRepository.ExistsByIdAsync(challenge.Id, token);
 
         if (!challengeExists)
         {
             return null;
         }
 
-        await _challengeRepository.UpdateAsync(challenge);
+        await _challengeRepository.UpdateAsync(challenge, token);
 
         return challenge;
     }
 
-    public Task<bool> DeleteByIdAsync(Guid id)
+    public Task<bool> DeleteByIdAsync(Guid id, CancellationToken token = default)
     {
-        return _challengeRepository.DeleteByIdAsync(id);
+        return _challengeRepository.DeleteByIdAsync(id, token);
     }
 }

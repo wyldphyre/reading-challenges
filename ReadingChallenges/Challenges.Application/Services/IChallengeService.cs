@@ -4,13 +4,13 @@ namespace Challenges.Application.Services;
 
 public interface IChallengeService
 {
-    Task<bool> CreateAsync(Challenge challenge);
+    Task<bool> CreateAsync(Challenge challenge, CancellationToken token);
 
-    Task<Challenge?> GetByIdAsync(Guid id);
+    Task<Challenge?> GetByIdAsync(Guid id, CancellationToken token);
 
-    Task<IEnumerable<Challenge>> GetAllAsync();
+    Task<IEnumerable<Challenge>> GetAllAsync(CancellationToken token);
 
-    Task<Challenge?> UpdateAsync(Challenge challenge);
+    Task<Challenge?> UpdateAsync(Challenge challenge, CancellationToken token);
 
-    Task<bool> DeleteByIdAsync(Guid id);
+    Task<bool> DeleteByIdAsync(Guid id, CancellationToken token);
 }
