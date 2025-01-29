@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Challenges.Api.Mapping;
 using Challenges.Application;
 using Challenges.Application.Database;
@@ -7,7 +8,16 @@ var config = builder.Configuration;
 
 // Add services to the container.
 
+builder.Services.AddApiVersioning(x =>
+{
+    x.DefaultApiVersion = new ApiVersion(1);
+    x.AssumeDefaultVersionWhenUnspecified = true;
+    x.ReportApiVersions = true;
+    //x.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
+}).AddMvc();
+
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
