@@ -1,6 +1,7 @@
 ﻿using Challenges.Api.Mapping;
 using Challenges.Application.Services;
 using Challenges.Contracts.Requests;
+using Challenges.Contracts.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Challenges.Api.Controllers;
@@ -16,6 +17,8 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpPost(ApiEndpoints.Challenges.Create)]
+    [ProducesResponseType(typeof(ChallengeResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ValidationFailureResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create(
         [FromBody] CreateChallengeRequest request,
         CancellationToken token)
@@ -24,10 +27,13 @@ public class ChallengesController : ControllerBase
 
         await _challengeService.CreateAsync(challenge, token);
 
-        return CreatedAtAction(nameof(Get), new { id = challenge.Id }, challenge);
+        var response = challenge.MapToResponse();
+        return CreatedAtAction(nameof(Get), new { id = challenge.Id }, response);
     }
 
     [HttpGet(ApiEndpoints.Challenges.Get)]
+    [ProducesResponseType(typeof(ChallengeResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get(
         [FromRoute] Guid id,
         CancellationToken token)
@@ -45,6 +51,7 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpGet(ApiEndpoints.Challenges.GetAll)]
+    [ProducesResponseType(typeof(ChallengesResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(CancellationToken token)
     {
         var challenges = await _challengeService.GetAllAsync(token);
@@ -55,6 +62,9 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpPut(ApiEndpoints.Challenges.Update)]
+    [ProducesResponseType(typeof(ChallengeResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ValidationFailureResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Update(
         [FromRoute] Guid id,
         [FromBody] UpdateChallengeRequest request,
@@ -74,6 +84,8 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpDelete(ApiEndpoints.Challenges.Delete)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid id,
         CancellationToken token)
