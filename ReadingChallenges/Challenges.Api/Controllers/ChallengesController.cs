@@ -32,6 +32,7 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpGet(ApiEndpoints.Challenges.Get)]
+    //[ResponseCache(Duration = 30, VaryByHeader = "Accept, Accept-Encoding", Location = ResponseCacheLocation.Any)]
     [ProducesResponseType(typeof(ChallengeResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get(
@@ -51,6 +52,7 @@ public class ChallengesController : ControllerBase
     }
 
     [HttpGet(ApiEndpoints.Challenges.GetAll)]
+    //[ResponseCache(Duration = 30, VaryByQueryKeys = new[] { "name", "year", "target", "completed" }, VaryByHeader = "Accept, Accept-Encoding", Location = ResponseCacheLocation.Any)]
     [ProducesResponseType(typeof(ChallengesResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(CancellationToken token)
     {

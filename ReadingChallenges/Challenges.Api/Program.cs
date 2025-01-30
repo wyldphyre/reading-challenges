@@ -20,6 +20,7 @@ builder.Services.AddApiVersioning(x =>
     //x.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
 }).AddMvc().AddApiExplorer();
 
+//builder.Services.AddResponseCaching();
 
 builder.Services.AddControllers();
 
@@ -55,6 +56,8 @@ app.MapHealthChecks("_health");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+//app.UseResponseCaching();
 
 app.UseMiddleware<ValidationMappingMiddleware>();
 app.MapControllers();
