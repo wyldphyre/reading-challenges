@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Challenges.Api.Health;
 using Challenges.Api.Mapping;
 using Challenges.Api.Swagger;
 using Challenges.Application;
@@ -21,6 +22,9 @@ builder.Services.AddApiVersioning(x =>
 
 
 builder.Services.AddControllers();
+
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
 
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -45,6 +49,8 @@ if (app.Environment.IsDevelopment())
         }
     });
 }
+
+app.MapHealthChecks("_health");
 
 app.UseHttpsRedirection();
 
